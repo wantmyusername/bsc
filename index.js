@@ -1,20 +1,20 @@
-const Web3 = require('web3');
+const axios = require('axios');
 
-const web3 = new Web3('https://bsc-dataseed.binance.org/');
+const contractAddress = '';
+const apiKey = '';
 
-const contractAddress = '0x00';
-const contractAbi = [
-ABI_HERE
-];
+axios
+  .get(`https://api.bscscan.com/api?module=contract&action=getabi&address=${contractAddress}&apikey=${apiKey}`)
+  .then((response) => {
+    const contractAbi = JSON.parse(response.data.result);
+    const mintFunction = contractAbi.find((f) => f.name === 'mint' && f.type === 'function');
 
-const contractInstance = new web3.eth.Contract(contractAbi, contractAddress);
-
-const mintFunction = contractAbi.find(
-  (abi) => abi.type === 'function' && abi.name === 'mint'
-);
-
-if (mintFunction) {
-  console.log('El contrato tiene una función para mintear.');
-} else {
-  console.log('El contrato no tiene una función para mintear.');
-}
+    if (mintFunction) {
+      console.log(`La función "mint" está disponible para su uso. Contrato: ${contractAddress}`);
+    } else {
+      console.log('La función "mint" no está disponible para su uso');
+    }
+  })
+  .catch((error) => {
+    console.error('Error al obtener la ABI del contrato:', error);
+  });
